@@ -3,482 +3,603 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Russia Bikepacking — Статистика Южный Урал 2026</title>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet" />
+  <title>Russia Bikepacking — Южный Урал 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --dark:   #1a1f1c;
-      --darker: #111411;
-      --green:  #3a7d44;
-      --green2: #2d6235;
-      --lime:   #8bc34a;
-      --sand:   #e8e0cc;
-      --sand2:  #d4c9ad;
-      --text:   #f0ece0;
-      --muted:  rgba(240,236,224,0.5);
-      --card:   rgba(255,255,255,0.04);
-      --border: rgba(255,255,255,0.08);
+      --bg:       #f7f6f2;
+      --surface:  #ffffff;
+      --border:   #e8e4dc;
+      --text:     #1c1c1a;
+      --muted:    #8a8780;
+      --accent:   #2d6235;
+      --lime:     #5a8f3c;
+      --lime-bg:  #eef4e8;
+      --amber:    #9a7a1a;
+      --amber-bg: #fdf6e3;
+      --red:      #b94040;
+      --red-bg:   #fdf0f0;
+      --blue:     #2a5f8a;
+      --blue-bg:  #edf4fb;
     }
 
     body {
-      font-family: 'Barlow', sans-serif;
-      background: var(--darker);
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
       color: var(--text);
-      min-height: 100vh;
+      font-size: 14px;
+      line-height: 1.5;
     }
 
+    /* HEADER */
     header {
-      background: var(--darker);
+      background: var(--surface);
       border-bottom: 1px solid var(--border);
-      padding: 18px 40px;
+      padding: 14px 32px;
       display: flex;
       align-items: center;
-      gap: 20px;
+      justify-content: space-between;
+    }
+    .logo-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
     .logo-img {
-      height: 44px;
+      height: 36px;
       width: auto;
       object-fit: contain;
     }
-    .logo-divider {
+    .logo-sep {
       width: 1px;
-      height: 32px;
+      height: 24px;
       background: var(--border);
     }
-    .logo-text {
+    .logo-label {
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 600;
-      font-size: 15px;
-      letter-spacing: .08em;
+      font-size: 14px;
+      letter-spacing: .06em;
       text-transform: uppercase;
-      color: var(--sand2);
+      color: var(--text);
       line-height: 1.2;
     }
     .logo-sub {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: .04em;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--lime);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .35; }
+    }
+    .live-label {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: .04em;
+    }
+
+    /* PAGE */
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 28px 24px 56px;
+    }
+
+    /* PAGE TITLE */
+    .page-title {
+      margin-bottom: 24px;
+    }
+    .page-title h1 {
       font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 300;
-      font-size: 12px;
-      letter-spacing: .12em;
-      text-transform: uppercase;
+      font-weight: 700;
+      font-size: 28px;
+      letter-spacing: .01em;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .page-title p {
+      font-size: 13px;
       color: var(--muted);
     }
 
-    .hero {
-      background: var(--dark);
-      padding: 56px 40px 48px;
-      position: relative;
-      overflow: hidden;
-      border-bottom: 1px solid var(--border);
+    /* STAT CARDS */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
     }
-    .hero-bg-text {
-      position: absolute;
-      right: -10px;
-      top: 50%;
-      transform: translateY(-50%);
+    @media (max-width: 560px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+
+    .stat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+    }
+    .stat-n {
       font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 800;
-      font-size: 180px;
-      letter-spacing: -.04em;
-      color: rgba(255,255,255,0.025);
-      pointer-events: none;
-      user-select: none;
+      font-weight: 700;
+      font-size: 34px;
       line-height: 1;
+      margin-bottom: 5px;
     }
-    .hero-tag {
-      font-family: 'Barlow Condensed', sans-serif;
+    .stat-l {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .tag {
+      display: inline-block;
+      font-size: 10px;
       font-weight: 500;
-      font-size: 12px;
-      letter-spacing: .2em;
+      padding: 2px 8px;
+      border-radius: 20px;
+      letter-spacing: .04em;
       text-transform: uppercase;
-      color: var(--lime);
-      margin-bottom: 16px;
-    }
-    .hero h1 {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 800;
-      font-size: clamp(44px, 8vw, 88px);
-      line-height: .92;
-      letter-spacing: -.01em;
-      text-transform: uppercase;
-      color: var(--text);
       margin-bottom: 8px;
     }
-    .hero h1 span { color: var(--lime); }
-    .hero-route {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 300;
-      font-size: clamp(16px, 2.5vw, 24px);
+    .tag-green  { background: var(--lime-bg);  color: var(--lime);  }
+    .tag-amber  { background: var(--amber-bg); color: var(--amber); }
+    .tag-red    { background: var(--red-bg);   color: var(--red);   }
+    .tag-blue   { background: var(--blue-bg);  color: var(--blue);  }
+
+    /* GRID */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    @media (max-width: 620px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+    }
+    .card-title {
+      font-size: 11px;
+      font-weight: 600;
       letter-spacing: .08em;
       text-transform: uppercase;
       color: var(--muted);
-      margin-bottom: 30px;
-    }
-    .hero-pills { display: flex; gap: 10px; flex-wrap: wrap; }
-    .pill {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 600;
-      font-size: 12px;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      padding: 5px 14px;
-      border-radius: 2px;
-      border: 1px solid var(--border);
-      color: var(--sand2);
-    }
-    .pill.accent { background: var(--green2); border-color: var(--green); color: #fff; }
-
-    .content {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 40px 24px 60px;
-    }
-
-    .stat-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 2px;
-      margin-bottom: 2px;
-      background: var(--border);
-      border-radius: 4px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-    }
-    @media (max-width: 580px) { .stat-grid { grid-template-columns: repeat(2,1fr); } }
-    .stat-card { background: var(--dark); padding: 22px 20px; }
-    .stat-num {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 700;
-      font-size: 52px;
-      line-height: 1;
-      margin-bottom: 6px;
-      letter-spacing: -.02em;
-    }
-    .stat-label {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 400;
-      font-size: 12px;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .section-label {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 600;
-      font-size: 11px;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      color: var(--lime);
       margin-bottom: 14px;
     }
 
-    .two-col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2px;
-      background: var(--border);
-      border-radius: 4px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      margin-bottom: 2px;
+    /* CHART */
+    .chart-wrap { position: relative; width: 100%; height: 196px; }
+
+    /* LEGEND */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      margin-top: 12px;
     }
-    @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
-
-    .card { background: var(--dark); padding: 24px 22px; }
-
-    .chart-wrap { position: relative; width: 100%; height: 210px; margin: 8px 0 4px; }
-
-    .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-    .leg-item {
+    .leg {
       display: flex;
       align-items: center;
       gap: 5px;
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 500;
-      font-size: 12px;
-      letter-spacing: .05em;
+      font-size: 11px;
       color: var(--muted);
     }
-    .leg-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+    .leg-sq {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
 
-    .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-    .bar-label {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 500;
+    /* BARS */
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 9px;
+    }
+    .bar-lbl {
       font-size: 12px;
-      letter-spacing: .08em;
-      text-transform: uppercase;
       color: var(--muted);
-      width: 130px;
+      width: 120px;
       flex-shrink: 0;
     }
     .bar-track {
       flex: 1;
-      background: rgba(255,255,255,0.06);
-      border-radius: 2px;
-      height: 22px;
+      background: var(--bg);
+      border-radius: 3px;
+      height: 18px;
       overflow: hidden;
     }
     .bar-fill {
       height: 100%;
-      border-radius: 2px;
+      border-radius: 3px;
       display: flex;
       align-items: center;
-      padding-left: 10px;
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 700;
-      font-size: 12px;
-      letter-spacing: .06em;
-      color: rgba(255,255,255,0.9);
+      padding-left: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #fff;
       white-space: nowrap;
     }
+    .bar-fill.light { color: var(--text); }
 
+    /* DIVIDER */
+    .sep { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
+
+    /* CITY LIST */
     .city-row {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 8px 0;
+      gap: 8px;
+      padding: 7px 0;
       border-bottom: 1px solid var(--border);
     }
     .city-row:last-child { border-bottom: none; }
+    .city-rank {
+      font-size: 11px;
+      color: var(--border);
+      width: 16px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
     .city-name {
       flex: 1;
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 500;
-      font-size: 14px;
-      letter-spacing: .04em;
+      font-size: 13px;
+      color: var(--text);
     }
-    .city-mini { width: 80px; height: 3px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
-    .city-mini-fill { height: 100%; background: var(--lime); border-radius: 2px; }
-    .city-count {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 700;
-      font-size: 16px;
-      color: var(--sand2);
-      width: 26px;
+    .city-bar {
+      width: 70px;
+      height: 3px;
+      background: var(--bg);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .city-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+    .city-n {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      width: 22px;
       text-align: right;
     }
 
-    .hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+    /* LOADING / ERROR */
+    .status-bar {
+      text-align: center;
+      padding: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
 
+    /* FOOTER */
     footer {
       text-align: center;
-      padding: 28px;
-      border-top: 1px solid var(--border);
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 400;
-      font-size: 12px;
-      letter-spacing: .14em;
-      text-transform: uppercase;
+      padding: 20px;
+      font-size: 11px;
       color: var(--muted);
+      border-top: 1px solid var(--border);
+      margin-top: 12px;
     }
-    footer a { color: var(--lime); text-decoration: none; }
-
-    .gap { height: 2px; }
+    footer a { color: var(--accent); text-decoration: none; }
   </style>
 </head>
 <body>
 
 <header>
-  <img
-    class="logo-img"
-    src="https://90f1661d-2ff4-4f29-b07c-0e47453ca691.selstorage.ru/site1021899/c1fd46d6-1d96-497a-9fe9-33673d30641c/c1fd46d6-1d96-497a-9fe9-33673d30641c-12861055.png"
-    alt="Russia Bikepacking"
-    onerror="this.style.display='none'"
-  />
-  <div class="logo-divider"></div>
-  <div>
-    <div class="logo-text">Russia Bikepacking</div>
-    <div class="logo-sub">Южный Урал 2026</div>
+  <div class="logo-group">
+    <img class="logo-img"
+      src="https://90f1661d-2ff4-4f29-b07c-0e47453ca691.selstorage.ru/site1021899/c1fd46d6-1d96-497a-9fe9-33673d30641c/c1fd46d6-1d96-497a-9fe9-33673d30641c-12861055.png"
+      alt="Russia Bikepacking"
+      onerror="this.style.display='none'"
+    />
+    <div class="logo-sep"></div>
+    <div>
+      <div class="logo-label">Russia Bikepacking</div>
+      <div class="logo-sub">Статистика участников</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="live-dot"></div>
+    <span class="live-label" id="updateTime">загрузка...</span>
   </div>
 </header>
 
-<div class="hero">
-  <div class="hero-bg-text">УРАЛ</div>
-  <div class="hero-tag">Статистика участников · 2026</div>
-  <h1>Южный<br><span>Урал</span></h1>
-  <div class="hero-route">Маршруты 500 и 1100 км &nbsp;·&nbsp; 05.09.2026</div>
-  <div class="hero-pills">
-    <div class="pill accent">05 сентября 2026</div>
-    <div class="pill">102 заявки</div>
-    <div class="pill">Вся Россия</div>
-  </div>
-</div>
+<div class="page">
 
-<div class="content">
-
-  <div class="stat-grid">
-    <div class="stat-card">
-      <div class="stat-num" style="color:var(--lime);">102</div>
-      <div class="stat-label">Всего заявок</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-num" style="color:#5dbe6e;">56</div>
-      <div class="stat-label">Утверждено</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-num" style="color:#e0b840;">37</div>
-      <div class="stat-label">Согласование</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-num" style="color:#e06060;">2</div>
-      <div class="stat-label">Отказов</div>
-    </div>
+  <div class="page-title">
+    <h1>Южный Урал 2026 — заявки</h1>
+    <p>Маршруты 500 и 1100 км · старт 5 сентября 2026</p>
   </div>
 
-  <div class="gap"></div>
+  <div id="statusBar" class="status-bar">⏳ Загружаем данные из таблицы...</div>
 
-  <div class="two-col">
+  <!-- STATS -->
+  <div class="stats" id="statsRow">
+    <div class="stat">
+      <div class="tag tag-blue">Всего</div>
+      <div class="stat-n" id="sTotal" style="color:var(--blue);">—</div>
+      <div class="stat-l">заявок</div>
+    </div>
+    <div class="stat">
+      <div class="tag tag-green">Утверждено</div>
+      <div class="stat-n" id="sApproved" style="color:var(--lime);">—</div>
+      <div class="stat-l">участников</div>
+    </div>
+    <div class="stat">
+      <div class="tag tag-amber">Согласование</div>
+      <div class="stat-n" id="sPending" style="color:var(--amber);">—</div>
+      <div class="stat-l">заявок</div>
+    </div>
+    <div class="stat">
+      <div class="tag tag-red">Отказ</div>
+      <div class="stat-n" id="sDeclined" style="color:var(--red);">—</div>
+      <div class="stat-l">заявок</div>
+    </div>
+  </div>
+
+  <!-- ROW 1 -->
+  <div class="grid-2">
     <div class="card">
-      <div class="section-label">Статус заявок</div>
+      <div class="card-title">Статус заявок</div>
       <div class="chart-wrap">
-        <canvas id="statusChart" role="img" aria-label="Статусы: утверждена 56, согласование 37, письмо 6, отказ 2, прочее 1">Утверждена 56, Согласование 37, Письмо 6, Отказ 2, Прочее 1</canvas>
+        <canvas id="statusChart" role="img" aria-label="Круговая диаграмма статусов заявок"></canvas>
+      </div>
+      <div class="legend" id="statusLegend"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Маршрут × формат</div>
+      <div class="chart-wrap">
+        <canvas id="routeChart" role="img" aria-label="Столбчатая диаграмма по маршрутам и форматам"></canvas>
       </div>
       <div class="legend">
-        <span class="leg-item"><span class="leg-dot" style="background:#5dbe6e;"></span>Утверждена 56</span>
-        <span class="leg-item"><span class="leg-dot" style="background:#4a90d9;"></span>Согласование 37</span>
-        <span class="leg-item"><span class="leg-dot" style="background:#e0b840;"></span>Письмо 6</span>
-        <span class="leg-item"><span class="leg-dot" style="background:#e06060;"></span>Отказ 2</span>
-        <span class="leg-item"><span class="leg-dot" style="background:#666;"></span>Прочее 1</span>
-      </div>
-    </div>
-    <div class="card">
-      <div class="section-label">Маршрут × формат</div>
-      <div class="chart-wrap">
-        <canvas id="routeChart" role="img" aria-label="Маршрут 500: соло 34, команда 11. Маршрут 1100: соло 50, команда 7.">500 соло: 34, 500 команда: 11, 1100 соло: 50, 1100 команда: 7</canvas>
-      </div>
-      <div class="legend">
-        <span class="leg-item"><span class="leg-dot" style="background:#8bc34a;"></span>Соло</span>
-        <span class="leg-item"><span class="leg-dot" style="background:#4a7c59;"></span>Команда</span>
+        <span class="leg"><span class="leg-sq" style="background:#5a8f3c;"></span>Соло</span>
+        <span class="leg"><span class="leg-sq" style="background:#a0c878;"></span>Команда</span>
       </div>
     </div>
   </div>
 
-  <div class="gap"></div>
-
-  <div class="two-col">
+  <!-- ROW 2 -->
+  <div class="grid-2">
     <div class="card">
-      <div class="section-label">Топ городов</div>
-      <div id="cityList" style="margin-top:6px;"></div>
+      <div class="card-title">Топ городов</div>
+      <div id="cityList"></div>
     </div>
     <div class="card">
-      <div class="section-label">Объём по маршрутам</div>
-      <div style="margin-top:12px;">
-        <div class="bar-row">
-          <div class="bar-label">Маршрут 1100</div>
-          <div class="bar-track"><div class="bar-fill" style="width:100%;background:#3a7d44;">60 чел.</div></div>
-        </div>
-        <div class="bar-row">
-          <div class="bar-label">Маршрут 500</div>
-          <div class="bar-track"><div class="bar-fill" style="width:70%;background:#2d6235;">42 чел.</div></div>
-        </div>
-      </div>
-      <div class="hr"></div>
-      <div class="section-label">Формат участия</div>
-      <div style="margin-top:12px;">
-        <div class="bar-row">
-          <div class="bar-label">Соло</div>
-          <div class="bar-track"><div class="bar-fill" style="width:100%;background:#8bc34a;color:#1a2a10;">84 чел.</div></div>
-        </div>
-        <div class="bar-row">
-          <div class="bar-label">Команда</div>
-          <div class="bar-track"><div class="bar-fill" style="width:21%;background:#4a7c59;">18</div></div>
-        </div>
-      </div>
-      <div class="hr"></div>
-      <div class="section-label">Конверсия заявок</div>
-      <div style="margin-top:12px;">
-        <div class="bar-row">
-          <div class="bar-label">Утверждено</div>
-          <div class="bar-track"><div class="bar-fill" style="width:55%;background:#5dbe6e;color:#0d2210;">55%</div></div>
-        </div>
-        <div class="bar-row">
-          <div class="bar-label">Согласование</div>
-          <div class="bar-track"><div class="bar-fill" style="width:36%;background:#e0b840;color:#2a1e00;">36%</div></div>
-        </div>
-        <div class="bar-row">
-          <div class="bar-label">Письмо</div>
-          <div class="bar-track"><div class="bar-fill" style="width:6%;background:#666;"> </div></div>
-        </div>
-      </div>
+      <div class="card-title">Объём и конверсия</div>
+
+      <div style="margin-bottom:4px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Маршрут</div>
+      <div id="routeBars"></div>
+
+      <div class="sep"></div>
+      <div style="margin-bottom:4px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Формат</div>
+      <div id="formatBars"></div>
+
+      <div class="sep"></div>
+      <div style="margin-bottom:4px;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">Конверсия</div>
+      <div id="conversionBars"></div>
     </div>
   </div>
 
 </div>
 
 <footer>
-  <a href="https://russiabikepacking.ru" target="_blank">russiabikepacking.ru</a>
-  &nbsp;·&nbsp; Южный Урал 2026 &nbsp;·&nbsp; данные актуальны на момент выгрузки
+  Данные: <a href="https://russiabikepacking.ru" target="_blank">russiabikepacking.ru</a>
+  · обновляется автоматически при загрузке страницы
 </footer>
 
 <script>
-  const cities = [
-    ['Москва', 14], ['Санкт-Петербург', 12], ['Екатеринбург', 10],
-    ['Уфа', 9], ['Пермь', 7], ['Ижевск', 4], ['Новосибирск', 4],
-    ['Нижний Новгород', 3], ['Челябинск', 3]
-  ];
-  const maxC = cities[0][1];
-  const cityEl = document.getElementById('cityList');
-  cities.forEach(([city, n]) => {
-    const pct = Math.round(n / maxC * 100);
-    cityEl.innerHTML += `<div class="city-row">
-      <span class="city-name">${city}</span>
-      <div class="city-mini"><div class="city-mini-fill" style="width:${pct}%"></div></div>
-      <span class="city-count">${n}</span>
-    </div>`;
+const SHEET_ID = '1mdxnacZAEym4QuovB0Y0yC8oOXdMd1G0VNqIR3DIiu0';
+const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
+
+let statusChartInst = null;
+let routeChartInst  = null;
+
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/)
+      .map(c => c.replace(/^"|"$/g, '').trim());
+    if (cols.length >= 5 && cols[0]) rows.push(cols);
+  }
+  return rows;
+}
+
+function normalizeStatus(s) {
+  const v = (s || '').toUpperCase().trim();
+  if (v.includes('УТВЕР')) return 'Утверждена';
+  if (v.includes('СОГЛ'))  return 'Согласование';
+  if (v.includes('ПИСЬМ')) return 'Письмо';
+  if (v.includes('ОТКАЗ')) return 'Отказ';
+  if (v.includes('ДУБЛ'))  return 'Дубль';
+  return 'Прочее';
+}
+
+function normalizeCity(c) {
+  return (c || '').replace(/\s+/g, ' ').trim()
+    .replace(/\s*[-/,].*$/, '')
+    .replace(/\.$/, '')
+    .trim();
+}
+
+function bar(label, val, max, color, unit='') {
+  const pct = Math.round(val / max * 100);
+  const isLight = color === '#a0c878' || color === '#f0c040';
+  return `<div class="bar-row">
+    <div class="bar-lbl">${label}</div>
+    <div class="bar-track">
+      <div class="bar-fill${isLight?' light':''}" style="width:${pct}%;background:${color};">
+        ${val}${unit}
+      </div>
+    </div>
+  </div>`;
+}
+
+function render(rows) {
+  const total = rows.length;
+  const statusCount = {};
+  const routeCount  = { '500': 0, '1100': 0, 'other': 0 };
+  const formatCount = { solo: 0, team: 0 };
+  const cityCount   = {};
+
+  rows.forEach(r => {
+    const status = normalizeStatus(r[4]);
+    statusCount[status] = (statusCount[status] || 0) + 1;
+
+    const route = (r[2] || '').trim();
+    if (route === '500') routeCount['500']++;
+    else if (route === '1100') routeCount['1100']++;
+    else routeCount['other']++;
+
+    const fmt = (r[3] || '').toLowerCase();
+    if (fmt.includes('команда') || fmt.includes('team')) formatCount.team++;
+    else if (fmt === 'соло' || fmt === 'solo') formatCount.solo++;
+
+    const city = normalizeCity(r[1]);
+    if (city) cityCount[city] = (cityCount[city] || 0) + 1;
   });
 
-  new Chart(document.getElementById('statusChart'), {
+  // Stats
+  document.getElementById('sTotal').textContent    = total;
+  document.getElementById('sApproved').textContent = statusCount['Утверждена']  || 0;
+  document.getElementById('sPending').textContent  = statusCount['Согласование'] || 0;
+  document.getElementById('sDeclined').textContent = statusCount['Отказ']        || 0;
+
+  // Status donut
+  const statusLabels = ['Утверждена','Согласование','Письмо','Отказ','Дубль','Прочее'];
+  const statusColors = ['#5a8f3c','#2a5f8a','#c89a2a','#b94040','#c0b090','#b0aba0'];
+  const statusData   = statusLabels.map(l => statusCount[l] || 0).filter((v,i) => v > 0);
+  const usedLabels   = statusLabels.filter(l => (statusCount[l]||0) > 0);
+  const usedColors   = statusLabels.map((l,i) => [l, statusColors[i]]).filter(([l]) => (statusCount[l]||0) > 0).map(([,c]) => c);
+
+  if (statusChartInst) statusChartInst.destroy();
+  statusChartInst = new Chart(document.getElementById('statusChart'), {
     type: 'doughnut',
     data: {
-      labels: ['Утверждена','Согласование','Письмо','Отказ','Прочее'],
-      datasets: [{
-        data: [56, 37, 6, 2, 1],
-        backgroundColor: ['#5dbe6e','#4a90d9','#e0b840','#e06060','#555'],
-        borderWidth: 2,
-        borderColor: '#1a1f1c',
-        hoverOffset: 6
-      }]
+      labels: usedLabels,
+      datasets: [{ data: statusData, backgroundColor: usedColors, borderWidth: 2, borderColor: '#fff', hoverOffset: 4 }]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      cutout: '65%',
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw} чел.` } }
-      }
+      responsive: true, maintainAspectRatio: false, cutout: '64%',
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw}` } } }
     }
   });
 
-  new Chart(document.getElementById('routeChart'), {
+  const legendEl = document.getElementById('statusLegend');
+  legendEl.innerHTML = usedLabels.map((l,i) =>
+    `<span class="leg"><span class="leg-sq" style="background:${usedColors[i]};"></span>${l} ${statusData[i]}</span>`
+  ).join('');
+
+  // Route × format chart — solo500, team500, solo1100, team1100
+  const soloByRoute  = { '500': 0, '1100': 0 };
+  const teamByRoute  = { '500': 0, '1100': 0 };
+  rows.forEach(r => {
+    const route = (r[2] || '').trim();
+    if (route !== '500' && route !== '1100') return;
+    const fmt = (r[3] || '').toLowerCase();
+    if (fmt.includes('команда')) teamByRoute[route]++;
+    else soloByRoute[route]++;
+  });
+
+  if (routeChartInst) routeChartInst.destroy();
+  routeChartInst = new Chart(document.getElementById('routeChart'), {
     type: 'bar',
     data: {
       labels: ['500 км', '1100 км'],
       datasets: [
-        { label: 'Соло',    data: [34, 50], backgroundColor: '#8bc34a', borderRadius: 2, borderSkipped: false },
-        { label: 'Команда', data: [11,  7], backgroundColor: '#4a7c59', borderRadius: 2, borderSkipped: false }
+        { label: 'Соло',    data: [soloByRoute['500'], soloByRoute['1100']], backgroundColor: '#5a8f3c', borderRadius: 3, borderSkipped: false },
+        { label: 'Команда', data: [teamByRoute['500'], teamByRoute['1100']], backgroundColor: '#a0c878', borderRadius: 3, borderSkipped: false }
       ]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        x: {
-          grid: { display: false },
-          ticks: { color: 'rgba(240,236,224,0.4)', font: { family: 'Barlow Condensed', size: 13, weight: '600' } }
-        },
-        y: {
-          grid: { color: 'rgba(255,255,255,0.05)' },
-          ticks: { color: 'rgba(240,236,224,0.4)', font: { family: 'Barlow Condensed', size: 12 }, stepSize: 10 }
-        }
+        x: { grid: { display: false }, ticks: { color: '#8a8780', font: { size: 12 } } },
+        y: { grid: { color: '#f0ede6' }, ticks: { color: '#8a8780', font: { size: 11 }, stepSize: 10 } }
       }
     }
   });
+
+  // City list
+  const sorted = Object.entries(cityCount).sort((a,b) => b[1]-a[1]).slice(0,9);
+  const maxC = sorted[0]?.[1] || 1;
+  document.getElementById('cityList').innerHTML = sorted.map(([city, n], i) =>
+    `<div class="city-row">
+      <span class="city-rank">${i+1}</span>
+      <span class="city-name">${city}</span>
+      <div class="city-bar"><div class="city-bar-fill" style="width:${Math.round(n/maxC*100)}%"></div></div>
+      <span class="city-n">${n}</span>
+    </div>`
+  ).join('');
+
+  // Route bars
+  const maxR = Math.max(routeCount['500'], routeCount['1100']);
+  document.getElementById('routeBars').innerHTML =
+    bar('1100 км', routeCount['1100'], maxR, '#2d6235') +
+    bar('500 км',  routeCount['500'],  maxR, '#5a8f3c');
+
+  // Format bars
+  const maxF = Math.max(formatCount.solo, formatCount.team);
+  document.getElementById('formatBars').innerHTML =
+    bar('Соло',    formatCount.solo, maxF, '#5a8f3c') +
+    bar('Команда', formatCount.team, maxF, '#a0c878');
+
+  // Conversion bars
+  document.getElementById('conversionBars').innerHTML =
+    bar('Утверждено',   statusCount['Утверждена']  || 0, total, '#5a8f3c',  ' чел.') +
+    bar('Согласование', statusCount['Согласование']|| 0, total, '#c89a2a', ' чел.') +
+    bar('Письмо',       statusCount['Письмо']       || 0, total, '#b0aba0', ' чел.');
+}
+
+async function load() {
+  const bar = document.getElementById('statusBar');
+  try {
+    const res = await fetch(URL);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const text = await res.text();
+    const rows = parseCSV(text);
+    if (!rows.length) throw new Error('нет данных');
+    render(rows);
+    bar.style.display = 'none';
+    const now = new Date();
+    document.getElementById('updateTime').textContent =
+      'обновлено в ' + now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+  } catch (e) {
+    bar.textContent = '⚠️ Не удалось загрузить данные. Убедитесь, что таблица открыта для просмотра всем.';
+    document.getElementById('updateTime').textContent = 'ошибка загрузки';
+    console.error(e);
+  }
+}
+
+load();
 </script>
 </body>
 </html>
