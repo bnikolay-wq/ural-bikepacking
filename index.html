@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>URAL Bikepacking — Статистика участников</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f3ee;
+      --card: #ffffff;
+      --text: #1a1a18;
+      --muted: #6b6b64;
+      --border: rgba(0,0,0,0.08);
+      --accent: #1D5C3A;
+      --accent2: #2E7D52;
+      --gold: #B8860B;
+      --blue: #1a4a7a;
+    }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    /* HERO */
+    .hero {
+      background: var(--accent);
+      color: #fff;
+      padding: 52px 40px 44px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -80px;
+      width: 340px; height: 340px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -40px; left: 30%;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.03);
+    }
+    .hero-eyebrow {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 14px;
+    }
+    .hero h1 {
+      font-size: clamp(28px, 5vw, 48px);
+      font-weight: normal;
+      letter-spacing: -.01em;
+      line-height: 1.1;
+      margin-bottom: 10px;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: rgba(255,255,255,0.65);
+    }
+    .hero-sub {
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      margin-top: 18px;
+    }
+
+    /* CONTENT */
+    .content {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 40px 24px 60px;
+    }
+
+    /* STAT GRID */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+    @media (max-width: 600px) {
+      .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 18px;
+    }
+    .stat-num {
+      font-size: 36px;
+      font-weight: normal;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-label {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      letter-spacing: .08em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    /* SECTION */
+    .section-label {
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    /* TWO COL */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 640px) {
+      .two-col { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px 20px;
+    }
+
+    /* CHART WRAP */
+    .chart-wrap {
+      position: relative;
+      width: 100%;
+      height: 220px;
+      margin: 10px 0 6px;
+    }
+
+    /* LEGEND */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .leg-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .leg-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    /* BAR ROWS */
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+    .bar-label {
+      width: 120px;
+      flex-shrink: 0;
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+    }
+    .bar-track {
+      flex: 1;
+      background: #f0ede6;
+      border-radius: 3px;
+      height: 20px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      padding-left: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      white-space: nowrap;
+      transition: width 1s ease;
+    }
+
+    /* CITY LIST */
+    .city-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .city-row:last-child { border-bottom: none; }
+    .city-name { flex: 1; }
+    .city-mini-bar {
+      width: 80px;
+      height: 4px;
+      background: #f0ede6;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .city-mini-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+    .city-count {
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: var(--muted);
+      width: 24px;
+      text-align: right;
+    }
+
+    /* FOOTER */
+    .footer {
+      text-align: center;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 48px;
+      letter-spacing: .06em;
+    }
+
+    /* DIVIDER */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 32px 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-eyebrow">Статистика заявок · 2025</div>
+  <h1>URAL Bikepacking<br><em>Route Report</em></h1>
+  <div class="hero-sub">102 участника · маршруты 500 и 1100 км · вся Россия</div>
+</div>
+
+<div class="content">
+
+  <!-- SUMMARY STATS -->
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-num" style="color: var(--accent);">102</div>
+      <div class="stat-label">Всего заявок</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color: #1D9E75;">56</div>
+      <div class="stat-label">Утверждено</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color: var(--gold);">37</div>
+      <div class="stat-label">На согласовании</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color: #c0392b;">2</div>
+      <div class="stat-label">Отказов</div>
+    </div>
+  </div>
+
+  <!-- CHARTS ROW 1 -->
+  <div class="two-col">
+
+    <div class="card">
+      <div class="section-label">Статус заявок</div>
+      <div class="chart-wrap">
+        <canvas id="statusChart" role="img" aria-label="Круговая диаграмма статусов заявок">Утверждена: 56, Согласование: 37, Письмо: 6, Отказ: 2, Прочее: 1</canvas>
+      </div>
+      <div class="legend">
+        <span class="leg-item"><span class="leg-dot" style="background:#1D9E75;"></span>Утверждена 56</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#1a4a7a;"></span>Согласование 37</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#B8860B;"></span>Письмо 6</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#c0392b;"></span>Отказ 2</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#aaa;"></span>Прочее 1</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-label">Маршрут × формат</div>
+      <div class="chart-wrap">
+        <canvas id="routeChart" role="img" aria-label="Столбчатая диаграмма маршрутов по форматам">500 соло: 34, 500 команда: 11, 1100 соло: 50, 1100 команда: 7</canvas>
+      </div>
+      <div class="legend">
+        <span class="leg-item"><span class="leg-dot" style="background:#1a4a7a;"></span>Соло</span>
+        <span class="leg-item"><span class="leg-dot" style="background:#5b7fa6;"></span>Команда</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CHARTS ROW 2 -->
+  <div class="two-col">
+
+    <div class="card">
+      <div class="section-label">Топ городов по участникам</div>
+      <div style="margin-top: 8px;" id="cityList"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-label">Маршрут — объём</div>
+      <div style="margin-top: 16px;">
+        <div class="bar-row">
+          <div class="bar-label">Маршрут 1100</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:100%;background:#1a4a7a;">60 чел.</div>
+          </div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Маршрут 500</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:70%;background:#5b7fa6;">42 чел.</div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" style="margin: 20px 0 14px;" />
+
+      <div class="section-label">Формат участия</div>
+      <div style="margin-top: 12px;">
+        <div class="bar-row">
+          <div class="bar-label">Соло</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:100%;background:var(--accent);">84 чел.</div>
+          </div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Команда</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:21%;background:#5DCAA5;color:#04342C;">18</div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="divider" style="margin: 20px 0 14px;" />
+
+      <div class="section-label">Конверсия заявок</div>
+      <div style="margin-top: 12px;">
+        <div class="bar-row">
+          <div class="bar-label">Утверждено</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:55%;background:#1D9E75;">55%</div>
+          </div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Согласование</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:36%;background:#B8860B;">36%</div>
+          </div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Письмо</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:6%;background:#aaa;"> </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">URAL Bikepacking Route · данные актуальны на момент выгрузки</div>
+
+</div>
+
+<script>
+  const cities = [
+    ['Москва', 14], ['Санкт-Петербург', 12], ['Екатеринбург', 10],
+    ['Уфа', 9], ['Пермь', 7], ['Ижевск', 4], ['Новосибирск', 4],
+    ['Нижний Новгород', 3], ['Челябинск', 3]
+  ];
+  const maxCity = cities[0][1];
+  const cityEl = document.getElementById('cityList');
+  cities.forEach(([city, n]) => {
+    const pct = Math.round(n / maxCity * 100);
+    cityEl.innerHTML += `<div class="city-row">
+      <span class="city-name">${city}</span>
+      <div class="city-mini-bar"><div class="city-mini-fill" style="width:${pct}%"></div></div>
+      <span class="city-count">${n}</span>
+    </div>`;
+  });
+
+  new Chart(document.getElementById('statusChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Утверждена','Согласование','Письмо','Отказ','Прочее'],
+      datasets: [{
+        data: [56, 37, 6, 2, 1],
+        backgroundColor: ['#1D9E75','#1a4a7a','#B8860B','#c0392b','#aaaaaa'],
+        borderWidth: 2,
+        borderColor: '#fff',
+        hoverOffset: 6
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      cutout: '62%',
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw} чел.` } }
+      }
+    }
+  });
+
+  new Chart(document.getElementById('routeChart'), {
+    type: 'bar',
+    data: {
+      labels: ['500 км', '1100 км'],
+      datasets: [
+        { label: 'Соло', data: [34, 50], backgroundColor: '#1a4a7a', borderRadius: 4, borderSkipped: false },
+        { label: 'Команда', data: [11, 7], backgroundColor: '#5b7fa6', borderRadius: 4, borderSkipped: false }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: '#888', font: { family: 'Courier New', size: 11 } } },
+        y: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { color: '#888', font: { family: 'Courier New', size: 11 }, stepSize: 10 } }
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
